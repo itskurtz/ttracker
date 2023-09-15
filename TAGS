@@ -1,0 +1,281 @@
+
+testbuffer.c,15
+int main(6,61
+
+buffer.h,125
+#define H_BUFFER2,17
+#define BUFFER_SIZE 3,34
+struct buffer 5,60
+	char	*p;p6,76
+	size_t	 size;7,86
+	int	 cursor;8,101
+
+db.h,22
+#define H_DBSQL32,17
+
+mthread.c,83
+struct dummy 6,81
+	int f;7,96
+void *dummy_req(dummy_req10,108
+int main(15,207
+
+rel.c,285
+struct torrent_entry 6,83
+	LIST_ENTRY(7,106
+struct peer_entry 13,212
+	LIST_ENTRY(14,232
+struct torrent_entry *mk_torrent(mk_torrent32,621
+torrent_search_torrent(42,855
+peer_search_peer(55,1092
+torrent_insert_new(68,1293
+torrent_torrent_list_peers(149,3212
+int main(164,3528
+
+bencode.c,1078
+#define T_BYTESTRING 7,99
+#define T_INT 8,124
+#define T_LIST 9,142
+#define T_DICT 10,161
+struct list 12,181
+	struct list	*next;next13,195
+	struct list	*prev;prev14,215
+	void		*data;data15,235
+	int		 type;16,249
+struct dict 20,309
+	char			*key;key21,323
+	int			 type;22,337
+		char		*bytestring;bytestring24,360
+		int		 integer;25,381
+		struct list	*list;list26,398
+		struct dict	*dict;dict27,419
+	} value;28,440
+struct b_dict 31,454
+	char	**keys;keys33,487
+	int	 *type;type35,519
+	void	 *value;value37,551
+int encode_bytes_needed(45,668
+int encode_bytes 57,874
+int encode_int 67,1136
+int encode_dict(75,1284
+int encode_key_val(79,1318
+struct list *mk_list(mk_list87,1483
+void list_add_tail(100,1703
+void list_insert(107,1855
+struct dict *mk_dict(mk_dict114,2005
+void dict_insert_list(124,2198
+void dict_insert_byte_string(132,2389
+void dict_insert_dict(139,2595
+void print_list(146,2790
+void print_dict(169,3351
+int decode_integer(186,3691
+int decode_string(199,3946
+char *parse_bencode(parse_bencode216,4315
+int main(266,5201
+
+bncode.c,161
+#define _GNU_SOURCE1,0
+int encode_bytes 10,161
+int encode_int 18,346
+void bencode_init_peer(26,494
+void bencode_free_with_keys(53,1370
+int bencode(97,2296
+
+bncode.h,216
+#define H_BNCODE2,17
+#define T_BYTESTRING 6,79
+#define T_INT 7,104
+#define T_LIST 8,122
+#define T_DICT 9,141
+struct benc_list_entry 14,240
+	LIST_ENTRY(15,265
+struct benc_dict_entry 20,331
+	LIST_ENTRY(21,356
+
+db.c,118
+static sqlite3 *G_DB G_DB9,118
+int db_connect(11,148
+int db_disconnect(22,321
+int db_query_lookup_torrent(30,409
+
+buffer.c,506
+struct buffer *mk_buffer(mk_buffer9,138
+void buffer_init_buffer(18,290
+void buffer_alloc_buffer(24,385
+void buffer_truncate_buffer(30,521
+void buffer_zero_buffer(36,629
+int buffer_ncmp_string(42,754
+int buffer_align_buffer(62,1139
+int buffer_write_to_buffer(84,1672
+int buffer_append_string_to_buffer(93,1860
+int buffer_append_to_buffer(104,2107
+void buffer_print_string_buffer(117,2408
+size_t buffer_len(121,2486
+void buffer_free_buffer(125,2546
+void buffer_print_serialize_buffer(132,2669
+
+test.c,47
+int main(5,60
+	struct cd 6,95
+		int n;7,108
+
+torrent.c,846
+void torrent_init_cache_pool(12,264
+void torrent_msg_failure_missing_hash(21,478
+void torrent_msg_replay_peers(26,660
+void torrent_bencode_torrent(31,797
+struct torrent_entry *torrent_do_lookup_torrent_info_hash(torrent_do_lookup_torrent_info_hash105,2430
+struct torrent_entry *torrent_lookup_torrent(torrent_lookup_torrent117,2767
+struct peer_entry *mk_peer(mk_peer158,3887
+void free_peer(168,4046
+struct torrent_entry *mk_torrent(mk_torrent173,4144
+void free_torrent(187,4468
+torrent_search_torrent(193,4569
+peer_search_peer(206,4808
+void torrent_lock_list(242,5742
+void torrent_unlock_list(249,5933
+void torrent_list_workon(256,6127
+void torrent_list_jobdone(260,6212
+void torrent_remove_torrent(265,6301
+char *torrent_add_peer_and_return_list(torrent_add_peer_and_return_list281,6800
+void torrent_remove_peer(306,7506
+
+work.h,521
+#define H_WORKQ2,16
+struct job_t 11,155
+	struct thread_data *thread_data;thread_data13,200
+	struct http_kv_list	*http_kv_list;http_kv_list16,255
+	int			 type;19,316
+	int			 http_status;22,353
+	struct peer_req *peer_req;peer_req26,436
+	struct peer_entry *peer;peer29,497
+	struct buffer out;32,542
+struct workqueue_t 36,567
+	pthread_mutex_t *mtx;mtx39,663
+	struct workqueue *wq;wq40,686
+struct work_entry 43,713
+	struct job_t	*job;job44,733
+	int		 id;45,753
+	int		 status;46,764
+	TAILQ_ENTRY(48,814
+
+base.h,303
+#define H_BASE2,15
+#define NORMAL_SHUTDOWN 3,30
+#define FORCED_SHUTDOWN 4,58
+#define MAX_TRY 5,86
+#define TIMEOUT 6,107
+struct thread_data 12,181
+	struct server_q	*sq;sq13,202
+	int		 client;14,224
+struct server_q 17,243
+	struct workqueue_t	*wq;wq19,290
+	struct torrent_list_t	*tl;tl20,315
+
+server.h,270
+#define H_TSERVER2,18
+struct pth_entry 7,116
+	pthread_t	th;8,135
+	int		clientfd;9,150
+	TAILQ_ENTRY(10,166
+struct server 16,238
+	struct pth_list *th_list;th_list17,254
+	int		 th_count;18,281
+	int		 fd;19,318
+	int		 tries;20,329
+	struct server_q	*sq;sq21,343
+
+main.c,445
+#define _GNU_SOURCE1,0
+void update_server(19,347
+void cleanup_server(28,566
+int server_do_stats(45,923
+int shutdown_server(49,977
+int update_max_try(53,1031
+int set_shutdown(59,1147
+int runq_events(64,1237
+struct server *build_server_connection(build_server_connection107,2339
+void server_init_server_list(146,3157
+void server_init_globals(156,3362
+void main_server(184,4031
+int main(201,4337
+void *handle_req(handle_req208,4439
+
+torrent.h,855
+#define H_TORRENT2,18
+struct peer_req 13,203
+	unsigned long	downloaded;17,317
+	unsigned long	uploaded;18,344
+	char		peer_id[peer_id19,369
+	char		last_event[last_event20,402
+	char		info_hash[info_hash21,439
+	int		port;22,477
+	int		compact;23,489
+	char		event[event24,504
+struct torrent_list_t 28,526
+	pthread_cond_t		*cond;cond29,550
+	pthread_mutex_t		*mutex;mutex30,574
+	struct torrent_list	*list;list31,600
+	int			 working;34,682
+struct peer_entry 38,704
+	char    peer_id[peer_id40,735
+	long	port;41,768
+	char	ip[ip42,780
+	LIST_ENTRY(44,807
+struct torrent_entry 48,845
+	pthread_rwlock_t	*peer_rwlk;peer_rwlk51,908
+	struct peer_list	*peers;peers53,941
+	char	info_hash[info_hash55,968
+	int	id;56,1003
+	int	seeders;57,1012
+	int	leechers;58,1026
+	int	peer_count;59,1041
+	int	free_torrent;60,1058
+	LIST_ENTRY(62,1079
+
+work.c,184
+struct job_t *mk_job(mk_job13,225
+void workq_enqueue_job(23,403
+struct job_t *workq_dequeue_job(workq_dequeue_job38,708
+void work_process_job(56,1086
+void job_complete(106,2572
+
+torrent_ctx.h,296
+#define H_TORRENT_CTX2,22
+#define TORRENT_HASH_LEN 4,45
+#define PEER_HASH_LEN 5,76
+#define PEER_EVENT_MAX 6,103
+struct torrent_ctx 8,132
+	int		tid;9,153
+	char		info_hash[info_hash11,165
+	int		free_torrent;12,203
+	int		peer_count;13,223
+	int		seed_count;14,241
+	int		down_count;15,259
+
+http.h,352
+#define H_HTTP2,15
+#define HTTP_MAX_REQ_SIZE 8,134
+#define HTTP_MAX_KEYS 9,167
+#define HTTP_MAX_KEY_LEN 10,193
+#define HTTP_MAX_VAL_LEN 11,224
+#define HTTP_200 12,255
+#define HTTP_400 13,290
+struct http_uri_kv 15,335
+	char key[key16,356
+	char val[val17,385
+struct http_kv_entry 20,418
+	struct http_uri_kv data;21,441
+	TAILQ_ENTRY(22,467
+
+http.c,340
+struct http_kv_entry *http_lookup_kv_key(http_lookup_kv_key14,251
+struct peer_req *http_build_peer_req(http_build_peer_req22,462
+static void url_decode(49,1362
+int http_handle_write(70,1836
+int http_handle_read(75,2010
+void get_peer_info(163,4777
+void http_error(174,5084
+int http_response(182,5308
+int http_parse_query(230,6485
+
+dict.h,0
