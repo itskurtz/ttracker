@@ -24,7 +24,7 @@
 
 static int __DO_SHUTDOWN = 0;
 
-void handle_sigusr(int no) {
+void handle_sigusr(int no __unused) {
 	__DO_SHUTDOWN = 1;
 	fprintf(stderr, "SHUTDOWN SIGNAL\n");
 }
@@ -65,12 +65,12 @@ void cleanup_server(struct server *s, int force) {
 	return;
 }
 
-int server_do_stats(struct server *s) {
+int server_do_stats(struct server *s __unused) {
 	/* I ain't doing any stats */
 	return 0;
 }
 
-int shutdown_server(struct server *s) {
+int shutdown_server(struct server *s __unused) {
 	return __DO_SHUTDOWN;
 }
 
@@ -137,7 +137,7 @@ int update_max_try(struct server *s) {
 	return ++s->tries;
 }
 
-int set_shutdown(struct server *s, int status) {
+int set_shutdown(struct server *s __unused, int status __unused) {
 	// update server shutdown
 	return 0;
 }
@@ -349,7 +349,7 @@ void main_server(void) {
 }
 
 
-int main(int argc, char *argv[]) {
+int main(int argc __unused, char *argv[] __unused) {
 	/* config reader, do the necessary */
 	signal(SIGPIPE, SIG_IGN);
 	signal(SIGUSR1, handle_sigusr);
