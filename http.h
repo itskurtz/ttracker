@@ -12,6 +12,15 @@
 #define HTTP_200 "HTTP/1.1 200 OK"
 #define HTTP_400 "HTTP/1.1 400 Bad Request"
 #define HTTP_500 "HTTP/1.1 500 Internal Server Error"
+/* errors regarding peer requests */
+#define E_INFO_HASH	(0x01)
+#define E_PEER_ID	(0x02)
+#define E_PORT		(0x03)
+#define E_DOWNLOADED	(0x04)
+#define E_UPLOADED	(0x05)
+#define E_LEFT		(0x06)
+#define E_EVENT		(0x07)
+#define E_DEFAULT	(0xff)
 
 struct http_uri_kv {
 	char key[HTTP_MAX_KEY_LEN];
@@ -37,4 +46,5 @@ struct peer_req *http_build_peer_req(struct http_kv_list *list);
 struct peer_req *http_build_peer_req_hash_list(struct http_kv_list *list);
 struct http_kv_entry *http_lookup_kv_key(struct http_kv_list *list, char *key);
 void get_peer_info(struct sockaddr_in *caddr, char *out);
+int sanitize_peer_req(struct peer_req *ctx, int *error);
 #endif

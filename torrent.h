@@ -5,6 +5,7 @@
 #include "torrent_ctx.h"
 #include "buffer.h"
 
+
 #define T_MAX_NUMWANT (80)
 enum {T_NULL, T_START, T_STOP, T_COMPLETE};
 
@@ -14,18 +15,15 @@ LIST_HEAD(hashlist_t, hashentry_t);
 LIST_HEAD(scrapelist_t, scrapeentry_t);
 
 struct peer_req {
-	// char		tid;
-	/* what the peer is looking for*/
-	/* if these are negative i'm gonna fk u up*/
-	unsigned long		 downloaded;
-	unsigned long		 uploaded;
+	unsigned long long	 downloaded;
+	unsigned long long	 uploaded;
+	unsigned long long	 left;	
 	char			 peer_id[PEER_HASH_LEN+1];
 	char			 last_event[PEER_EVENT_MAX+1];
 	char			 info_hash[TORRENT_HASH_LEN+1];
 	char			 event[PEER_EVENT_MAX+1];
   	int			 port;
 	int			 compact;
-	long			 left;
 	struct hashlist_t	*hashlist;
 };
 
@@ -95,6 +93,7 @@ struct torrent_entry *torrent_mk_torrent(void);
 void torrent_add_torrent(struct torrent_list *head, struct torrent_entry *t);
 struct torrent_entry *torrent_lookup_torrent(char *info_hash, struct torrent_list_t *tl);
 struct torrent_entry *torrent_do_lookup_torrent_info_hash(char *info_hash, struct torrent_list *tl);
+void torrent_msg_failure_generic(struct buffer *b, char *error, int error_len);
 void torrent_msg_failure_missing_hash(struct buffer *b);
 void torrent_init_cache_pool(void);
 void torrent_stop_pool(struct torrent_list *list);
@@ -127,5 +126,7 @@ int bencode_scrape_ctx(struct scrape_ctx *ctx, char *out);
 void scrape_stop_ctx(struct scrape_ctx *ctx);
 void scrape_add_torrent(struct scrape_ctx *ctx, struct torrent_entry *te);
 struct scrape_ctx *scrape_start_ctx();
+
+
 
 #endif

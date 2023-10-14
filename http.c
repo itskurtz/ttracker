@@ -6,12 +6,24 @@
 #include <curl/curl.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <ctype.h>
+#include <limits.h>
 #include "http.h"
 #include "torrent.h"
 #include "server.h"
 #include "mem.h"
 
 static void url_decode(char *out, char *in);
+static int sanitize_info_hash(const char *info_hash, int hash_len);
+
+
+static int sanitize_info_hash(const char *info_hash, int info_len) {
+	int i;
+	for (i = 0; i < info_len; i++)
+		if (isxdigit(info_hash[i]) == 0)
+			return -1;
+	return 0;
+}
 
 struct http_kv_entry *http_lookup_kv_key(struct http_kv_list *list, char *key) {
 	struct http_kv_entry *np;
@@ -47,7 +59,9 @@ struct peer_req *http_build_peer_req(struct http_kv_list *list) {
 	/* first decode the url */
 	
 	url_decode(ctx->info_hash, np->data.val);
+	
 	/* strcpy(ctx->info_hash, np->data.val); */
+	/* I need to sanitize some of these values */
 	
 	np = http_lookup_kv_key(list, "peer_id");
 	strcpy(ctx->peer_id, np->data.val);
@@ -74,6 +88,67 @@ struct peer_req *http_build_peer_req(struct http_kv_list *list) {
 		strcpy(ctx->event, np->data.val);
 	ctx->hashlist = NULL;
 	return ctx;
+}
+
+int sanitize_peer_req(struct peer_req *ctx, int *error) {
+	unsigned int j;
+	*error = E_DEFAULT;
+
+	/* INFO_HASH */
+	/* torrents use sha1 len40*/
+	if (sanitize_info_hash(ctx->info_hash, 40) == -1) {
+		*error = E_INFO_HASH;
+		return -1;
+	}
+
+	/* PEER_ID */
+
+	/* check for peer_id must be a graph char */
+	for (j = 0; j < strlen(ctx->peer_id); j++)
+		if (isgraph(ctx->peer_id[j]) == 0) {
+			*error = E_PEER_ID;
+			return -1;
+		}
+	/* PORT */
+	/* i want a high port */
+	if (ctx->port < 0x400 || ctx->port > 0xffff) {
+		*error = E_PORT;
+		return -1;
+	}
+
+	/*
+	  man strtoul(3)
+	  UULONG_MAX should be caused if the value overflows
+	 */
+
+	/* DOWNLOADED */
+	/* this should not overflow... */
+	if (ctx->downloaded < 0 || ctx->downloaded >= ULLONG_MAX) {
+		*error = E_DOWNLOADED;
+		return -1;
+	}
+	/* UPLOADED */
+	/* this should not overflow... */
+	if (ctx->uploaded < 0 || ctx->uploaded >= ULLONG_MAX) {
+		*error = E_UPLOADED;
+		return -1;
+	}
+
+	/* LEFT */
+	/* I can't actually check for how much is left coz at
+	   this point idk which torrent im looking for */
+	if (ctx->left < 0 || ctx->left >= ULLONG_MAX) {
+		*error = E_LEFT;
+		return -1;
+	}
+	if (strcmp(ctx->event, "count") != 0 && strcmp(ctx->event, "start") != 0
+	    && strcmp(ctx->event, "stop") != 0 && strcmp(ctx->event, "complete") != 0) {
+		*error = E_EVENT;
+		return -1;
+		
+	}
+	
+	return 0;
 }
 
 /* I should use a static table or similar, this is too expensive */

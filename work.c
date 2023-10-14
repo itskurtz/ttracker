@@ -130,10 +130,58 @@ static void _job_handle_announce(struct job_t *job) {
 	struct peer_entry	 pe, *pp, *pep;
 	struct torrent_entry	*torrent;
 	char			*peer_list;
+	int			 sanitize_error;
 	
 	/* ok so at this time I can only handle announces */
 	/* not true, I can handle scrapes aswell*/
 	job->peer_req = http_build_peer_req(job->http_kv_list);
+	if (sanitize_peer_req(job->peer_req, &sanitize_error) == -1) {
+		/*   */
+		switch(sanitize_error) {
+		case E_INFO_HASH:
+			torrent_msg_failure_generic(
+				job->out,
+				"Corrupted hash", strlen("Corrupted hash"));
+			break;
+		case E_PEER_ID:
+			torrent_msg_failure_generic(
+				job->out,
+				"Invalid peer_id", strlen("Invalid peer_id"));
+			break;
+		case E_PORT:
+			torrent_msg_failure_generic(
+				job->out,
+				"Invalid port", strlen("Invalid port"));
+			break;
+		case E_DOWNLOADED:
+			torrent_msg_failure_generic(
+				job->out,
+				"Invalid downloaded value", strlen("Invalid downloaded value"));
+			break;
+		case E_UPLOADED:
+			torrent_msg_failure_generic(
+				job->out,
+				"Invalid uploaded value", strlen("Invalid uploaded value"));
+			break;
+		case E_LEFT:
+			torrent_msg_failure_generic(
+				job->out,
+				"Invalid left value", strlen("Invalid left value"));
+			break;
+		case E_EVENT:
+			torrent_msg_failure_generic(
+				job->out,
+				"Invalid event", strlen("Invalid event"));
+			break;
+		default:
+			torrent_msg_failure_generic(
+				job->out,
+				"Generic event", strlen("Generic event"));			
+			break;
+		}
+
+		return;
+	}
 	
 	/* if present in db or whatsoever */
 	torrent_list_workon(job->thread_data->sq->tl); /* lock torrent removal */
@@ -172,7 +220,7 @@ static void _job_handle_announce(struct job_t *job) {
 		else {
 			/* probably completed */
 			torrent_list_jobdone(job->thread_data->sq->tl);
-			printf("wrong event my friend\n");
+			/* printf("wrong event my friend\n"); */
 		}
 	}
 	else {

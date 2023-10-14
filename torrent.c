@@ -32,6 +32,17 @@ void torrent_stop_pool(struct torrent_list *list) {
 	}
 }
 
+void torrent_msg_failure_generic(struct buffer *b, char *error, int error_len) {
+	char *errorstr;
+	/* 10 is 8 digits + : + e should be enough */
+	errorstr = xmalloc(sizeof(char) * (error_len+8));
+	snprintf(errorstr, error_len + 8, "%d:%s", error_len, error);
+	buffer_append_string_to_buffer(b, "d14:failure reason");
+	buffer_append_string_to_buffer(b, errorstr);
+	buffer_append_string_to_buffer(b, "e");
+	free(errorstr);
+}
+
 /* i need a pool of allocated buffers to clean at the end */
 void torrent_msg_failure_missing_hash(struct buffer *b) {
 	buffer_append_string_to_buffer(b, "d14:failure reason29:Missing \"info_hash\" parametere");
