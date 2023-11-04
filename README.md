@@ -6,3 +6,5 @@ Works on FreeBSD, macOS, should work on Linux too.
 build: make all
 run: ./ttracker
 remove object files: make clean
+
+this is just a pet project written in a weekend don't use it!
